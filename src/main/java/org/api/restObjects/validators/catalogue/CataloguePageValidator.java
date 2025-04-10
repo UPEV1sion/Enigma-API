@@ -8,6 +8,6 @@ import org.db.DatabaseConfig;
 public class CataloguePageValidator implements ConstraintValidator<ValidCataloguePage, Integer> {
     @Override
     public boolean isValid(Integer i, ConstraintValidatorContext constraintValidatorContext) {
-        return i <= DatabaseConfig.NUM_PAGES && i > 0;
+        return i < DatabaseConfig.NUM_PAGES && i >= 0;
     }
 }
