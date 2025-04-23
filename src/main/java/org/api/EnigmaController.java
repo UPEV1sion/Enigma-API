@@ -2,16 +2,19 @@ package org.api;
 
 import jakarta.validation.Valid;
 import org.api.restObjects.catalogue.CatalogueRequest;
+import org.api.restObjects.manualcyclometer.ManualCyclometerRequest;
 import org.db.RotorCharacteristic;
 import org.db.RotorCharacteristicService;
 import org.nativeCInterface.CyclometerConnector;
 import org.nativeCInterface.EnigmaConnector;
+import org.nativeCInterface.ManualCyclometerConnector;
 import org.nativeCInterface.ffm.CyclometerInterface;
 import org.nativeCInterface.ffm.EnigmaInterface;
 import org.api.restObjects.cyclometer.CyclometerCycles;
 import org.api.restObjects.cyclometer.CyclometerRequest;
 import org.api.restObjects.cyclometer.CyclometerResponse;
 import org.api.restObjects.enigma.EnigmaRequest;
+import org.nativeCInterface.ffm.ManualCyclometerInterface;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,11 +29,14 @@ public class EnigmaController {
     private final RotorCharacteristicService service;
     private final EnigmaConnector enigmaConnector;
     private final CyclometerConnector cyclometerConnector;
+    private final ManualCyclometerConnector manualCyclometerConnector;
 
     public EnigmaController(RotorCharacteristicService rotorCharacteristicService) {
         this.service = rotorCharacteristicService;
         this.enigmaConnector = new EnigmaInterface();
         this.cyclometerConnector = new CyclometerInterface();
+        this.manualCyclometerConnector = new ManualCyclometerInterface();
+
     }
 
     @PostMapping("/enigma")
@@ -46,6 +52,15 @@ public class EnigmaController {
     public ResponseEntity<CyclometerResponse> cyclometer(@Valid @RequestBody CyclometerRequest req) {
 
         Optional<CyclometerCycles> computedCycles = cyclometerConnector.getCyclesFromCyclometer(req);
+        return computedCycles
+                .map(cycles -> ResponseEntity.ok(new CyclometerResponse(cycles)))
+                .orElseGet(() -> ResponseEntity.badRequest().build());
+    }
+
+    @PostMapping("/manualcyclometer")
+    public ResponseEntity<CyclometerResponse> cyclometer(@Valid @RequestBody ManualCyclometerRequest req) {
+
+        Optional<CyclometerCycles> computedCycles = manualCyclometerConnector.getManualCyclesFromCyclometer(req);
         return computedCycles
                 .map(cycles -> ResponseEntity.ok(new CyclometerResponse(cycles)))
                 .orElseGet(() -> ResponseEntity.badRequest().build());
