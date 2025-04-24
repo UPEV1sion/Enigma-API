@@ -25,7 +25,6 @@ public class ManualKeysFactory {
         for (int i = 0; i < length + 1; i++) {
             segment.setAtIndex(ValueLayout.ADDRESS, i, MemorySegment.ofAddress(manualKeysAddr[i].address()));
         }
-
         return segment;
     }
 }
