@@ -10,7 +10,6 @@ import java.lang.foreign.FunctionDescriptor;
 import java.lang.foreign.Linker;
 import java.lang.foreign.SymbolLookup;
 import java.lang.invoke.MethodHandle;
-import java.util.Arrays;
 import java.util.Optional;
 
 import static java.lang.foreign.ValueLayout.ADDRESS;
@@ -41,8 +40,6 @@ public class ManualCyclometerInterface implements ManualCyclometerConnector {
             final var computedCyclesSeg = ComputedCyclesFactory.createCyclometerCyclesSegment(arena);
             final int dailyKeyCount = Integer.parseInt(req.parameters().daily_key_count());
             final var manual_keys_seg = JavaToCFactory.JavaStringArrayToTerminatedUTF8(req.parameters().manual_keys(), arena);
-            System.out.println(Arrays.toString(req.parameters().manual_keys()));
-
             final int ret = (int) MANUAL_CYCLOMETER_CREATE_CYCLES.invoke(enigmaSeg, dailyKeyCount, manual_keys_seg, computedCyclesSeg);
             if (ret == 0) {
                 final CyclometerCycles computedCycles = ComputedCyclesFactory.createCyclometerCycles(computedCyclesSeg);
