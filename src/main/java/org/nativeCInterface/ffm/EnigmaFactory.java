@@ -1,20 +1,21 @@
 package org.nativeCInterface.ffm;
 
 import org.api.restObjects.enigma.Enigma;
+import org.nativeCInterface.NativeInterfaceConfig;
 
 import java.lang.foreign.Arena;
 import java.lang.foreign.MemoryLayout;
 import java.lang.foreign.MemorySegment;
+import java.lang.foreign.SequenceLayout;
 import java.util.Map;
-import java.util.stream.Stream;
 
-import static java.lang.foreign.ValueLayout.ADDRESS;
-import static java.lang.foreign.ValueLayout.JAVA_INT;
+import static java.lang.foreign.ValueLayout.*;
 
 public class EnigmaFactory {
 
     private static final MemoryLayout ENIGMA_LAYOUT = MemoryLayout.structLayout(
-            ADDRESS.withName("plugboard"),
+            MemoryLayout.sequenceLayout(26, JAVA_BYTE).withName("plugboard"),
+            MemoryLayout.paddingLayout(6), // Pad to align to 8 bytes
             ADDRESS.withName("message"),
             ADDRESS.withName("rotor_positions"),
             ADDRESS.withName("ring_settings"),
@@ -23,18 +24,19 @@ public class EnigmaFactory {
             JAVA_INT.withName("reflector")
     ).withName("EnigmaConfiguration");
 
-    private static MemorySegment allocateIntArrayFromStringArray(final Arena arena, final String[] arr) {
-        return arena.allocateFrom(JAVA_INT,
-                                  Stream.of(arr)
-                                        .mapToInt(Integer::parseInt)
-                                        .toArray());
-    }
 
     private static void setEnigmaField(final MemorySegment segment, final String fieldName, final Object value) {
         final long offset = ENIGMA_LAYOUT.byteOffset(MemoryLayout.PathElement.groupElement(fieldName));
 
         switch (value) {
-            case MemorySegment memSeg -> segment.set(ADDRESS, offset, memSeg);
+            case MemorySegment memSeg -> {
+                if (ENIGMA_LAYOUT.select(PathElement.groupElement(fieldName)) instanceof SequenceLayout seq &&
+                        seq.elementLayout().equals(JAVA_BYTE)) {
+                    segment.asSlice(offset, seq.byteSize()).copyFrom(memSeg);
+                } else {
+                    segment.set(ADDRESS, offset, memSeg);
+                }
+            }
             case Integer intVal -> segment.set(JAVA_INT, offset, intVal);
             case Character charVal -> segment.set(JAVA_INT, offset, charVal);
             default -> throw new IllegalArgumentException("Unsupported field type: " + value.getClass());
@@ -42,11 +44,13 @@ public class EnigmaFactory {
     }
 
     private static Map<String, Object> getEnigmaFieldsSegmentMap(final Enigma enigma, final Arena arena) {
-        final var plugboardSeg = arena.allocateFrom(enigma.plugboard());
-        final var messageSeg = arena.allocateFrom(enigma.input());
-        final var rotorPosSeg = allocateIntArrayFromStringArray(arena, enigma.positions());
-        final var ringPosSeg = allocateIntArrayFromStringArray(arena, enigma.rings());
-        final var rotorTypeSeg = allocateIntArrayFromStringArray(arena, enigma.rotors());
+
+        final var model = Integer.parseInt(enigma.model());
+        final var plugboardSeg = JavaToCFactory.allocatePaddedASCIIFromJavaString(enigma.plugboard(), NativeInterfaceConfig.ALPHABET_SIZE, arena);
+        final var messageSeg = JavaToCFactory.allocateTerminatedASCIIFromString(enigma.input(), arena);
+        final var rotorPosSeg = JavaToCFactory.allocateUint8_TArrayFromStringArray(enigma.positions(), model, arena);
+        final var ringPosSeg = JavaToCFactory.allocateUint8_TArrayFromStringArray(enigma.rings(), model, arena);
+        final var rotorTypeSeg = JavaToCFactory.allocateIntArrayFromStringArray(enigma.rotors(), model, arena);
 
         return Map.of(
                 "plugboard", plugboardSeg,
@@ -54,7 +58,7 @@ public class EnigmaFactory {
                 "rotor_positions", rotorPosSeg,
                 "ring_settings", ringPosSeg,
                 "rotors", rotorTypeSeg,
-                "type", Integer.parseInt(enigma.model()),
+                "type", model,
                 "reflector", enigma.reflector()
                 );
     }

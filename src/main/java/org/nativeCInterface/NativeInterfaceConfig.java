@@ -8,6 +8,7 @@ public class NativeInterfaceConfig {
     public static final String ENIGMA_METHOD_NAME = "enigma_encrypt";
     public static final String CYCLOMETER_METHOD_NAME = "cyclometer_create_cycles";
     public static final String MANUAL_CYCLOMETER_METHOD_NAME = "manual_cyclometer_create_cycles";
+    public static final int ALPHABET_SIZE = 26;
 
     static {
         if (!Files.exists(LIBRARY_PATH)) {

@@ -13,7 +13,7 @@ public class ManualKeysFactory {
         int length = manualKeys.length;
         MemorySegment[] manualKeysAddr = new MemorySegment[length + 1];//NULL-Termination
         for (int i = 0; i < length; i++) {
-            manualKeysAddr[i] = JavaToCFactory.JavaStringToTerminatedUTF8(manualKeys[i], arena);
+            manualKeysAddr[i] = JavaToCFactory.allocateTerminatedASCIIFromString(manualKeys[i], arena);
         }
         manualKeysAddr[length] = MemorySegment.NULL;
 
@@ -21,7 +21,6 @@ public class ManualKeysFactory {
                 ValueLayout.ADDRESS.byteSize() * manualKeysAddr.length,
                 ValueLayout.ADDRESS.byteSize());
 
-        //Write the Addresses
         for (int i = 0; i < length + 1; i++) {
             segment.setAtIndex(ValueLayout.ADDRESS, i, MemorySegment.ofAddress(manualKeysAddr[i].address()));
         }

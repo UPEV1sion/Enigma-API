@@ -4,66 +4,85 @@ import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
 import java.nio.charset.StandardCharsets;
+import java.util.stream.Stream;
 
-import static java.lang.foreign.ValueLayout.JAVA_BYTE;
+import static java.lang.foreign.ValueLayout.*;
 
 public class JavaToCFactory {
-    public static MemorySegment JavaStringToTerminatedUTF8(String string, Arena arena) {
-        byte[] utf8 = string.getBytes(StandardCharsets.UTF_8);
 
-        MemorySegment segment = arena.allocate(JAVA_BYTE, utf8.length + 1);
-        segment.asByteBuffer().put(utf8).put((byte) 0);
+    public static MemorySegment allocateTerminatedASCIIFromString(final String string, Arena arena) {
+        byte[] stringBytes = string.getBytes(StandardCharsets.US_ASCII);
+
+        MemorySegment segment = arena.allocate(JAVA_BYTE, stringBytes.length + 1);
+        segment.asByteBuffer().clear();
+        segment.asByteBuffer().put(stringBytes).put((byte) 0);
         return segment;
     }
 
-    public static MemorySegment JavaStringArrayToTerminatedUTF8(final String[] stringArr, final Arena arena) {
+    public static MemorySegment allocateTerminatedASCIIArrayFromStringArray(final String[] stringArr, final Arena arena) {
         int length = stringArr.length;
-        MemorySegment[] segArr = new MemorySegment[length + 1];//NULL-Termination
-        for (int i = 0; i < length; i++) {
-            segArr[i] = JavaToCFactory.JavaStringToTerminatedUTF8(stringArr[i], arena);
-        }
-        segArr[length] = MemorySegment.NULL;
 
+        // Allocate memory for the addresses of the strings + the NULL terminator
         MemorySegment segment = arena.allocate(
-                ValueLayout.ADDRESS.byteSize() * segArr.length,
-                ValueLayout.ADDRESS.byteSize());
+                ValueLayout.ADDRESS.byteSize() * (length + 1), // Size for holding addresses
+                ValueLayout.ADDRESS.byteSize() // Align to the address size
+        );
 
-        //Write the Addresses
-        for (int i = 0; i < length + 1; i++) {
-            segment.setAtIndex(ValueLayout.ADDRESS, i, MemorySegment.ofAddress(segArr[i].address()));
+        // Write the addresses of the strings into the segment
+        for (int i = 0; i < length; i++) {
+            MemorySegment stringSegment = JavaToCFactory.allocateTerminatedASCIIFromString(stringArr[i], arena);
+            segment.setAtIndex(ValueLayout.ADDRESS, i, MemorySegment.ofAddress(stringSegment.address()));
         }
+
+        // Write the NULL terminator at the end of the segment
+        segment.setAtIndex(ValueLayout.ADDRESS, length, MemorySegment.NULL);
+
         return segment;
     }
 
+    public static MemorySegment allocatePaddedASCIIFromJavaString(final String string, int totalLength, Arena arena) {
+        byte[] stringBytes = string.getBytes(StandardCharsets.US_ASCII);
 
-    public static MemorySegment JavaStringArrToUint8_t(String[] stringArr, Arena arena) {
-        byte[] uint8_arr = new byte[stringArr.length];
-        for (int i = 0; i < stringArr.length; i++) {
-            int val = Integer.parseInt(stringArr[i]);
+        if (stringBytes.length > totalLength) {
+            throw new IllegalArgumentException("Input exceeds total length");
+        }
+
+        byte[] padded = new byte[totalLength];
+        System.arraycopy(stringBytes, 0, padded, 0, stringBytes.length); // pad with zeros
+
+        MemorySegment segment = arena.allocate(JAVA_BYTE, totalLength);
+        segment.asByteBuffer().put(padded);
+
+        return segment;
+    }
+
+    public static MemorySegment allocateUint8_TArrayFromStringArray(final String[] arr, int expectedLength, final Arena arena) {
+        if (arr.length != expectedLength) {
+            throw new IllegalArgumentException("Input array length is not as expected: " + arr.length);
+        }
+        byte[] bytes = new byte[arr.length];
+
+        for (int i = 0; i < arr.length; i++) {
+            int val = Integer.parseInt(arr[i].trim());
+
             if (val < 0 || val > 255) {
                 throw new IllegalArgumentException("Value out of range for uint8_t: " + val);
             }
-            uint8_arr[i] = (byte) (val & 0xFF); // Store as signed byte, mask to 8-bit
+            bytes[i] = (byte) (val & 0xFF);
         }
-        MemorySegment segment = arena.allocate(ValueLayout.JAVA_BYTE.byteSize() * uint8_arr.length);
-
-        for (int i = 0; i < uint8_arr.length; i++) {
-            segment.setAtIndex(ValueLayout.JAVA_BYTE, i, uint8_arr[i]);
-        }
-        return segment;
+        return arena.allocateFrom(JAVA_BYTE, bytes);
     }
 
-
-    public static MemorySegment allocateUint8tArrayFromStringArray(final Arena arena, final String[] arr) {
-        byte[] uint8Array = new byte[arr.length];
-
-        for (int i = 0; i < arr.length; i++) {
-            int val = Integer.parseInt(arr[i]);
-            if (val < 0 || val > 255) {
-                throw new IllegalArgumentException("Invalid uint8_t value: " + val);
-            }
-            uint8Array[i] = (byte) (val & 0xFF);
+    public static MemorySegment allocateIntArrayFromStringArray(final String[] arr, final int expectedLength, final Arena arena) {
+        if (arr.length != expectedLength) {
+            throw new IllegalArgumentException("Expected length: " + expectedLength + ", but got: " + arr.length);
         }
-        return arena.allocateFrom(ValueLayout.JAVA_BYTE, uint8Array);
+        return arena.allocateFrom(JAVA_INT,
+                Stream.of(arr)
+                        .mapToInt(Integer::parseInt)
+                        .toArray());
     }
 }
+
+
+
