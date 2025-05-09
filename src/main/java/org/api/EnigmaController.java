@@ -24,6 +24,7 @@ import java.util.Optional;
 
 
 @RestController
+@RequestMapping("/api")
 public class EnigmaController {
 
     private final RotorCharacteristicService service;
@@ -41,6 +42,7 @@ public class EnigmaController {
 
     @PostMapping("/enigma")
     public ResponseEntity<EnigmaRequest> enigma(@Valid @RequestBody EnigmaRequest req) {
+        System.out.println("EnigmaController::enigma");
         Optional<org.api.restObjects.enigma.Enigma> output = enigmaConnector.getOutputFromEnigma(req.enigma());
 
         return output
@@ -50,7 +52,7 @@ public class EnigmaController {
 
     @PostMapping("/cyclometer")
     public ResponseEntity<CyclometerResponse> cyclometer(@Valid @RequestBody CyclometerRequest req) {
-
+        System.out.println("EnigmaController::cyclometer");
         Optional<CyclometerCycles> computedCycles = cyclometerConnector.getCyclesFromCyclometer(req);
         return computedCycles
                 .map(cycles -> ResponseEntity.ok(new CyclometerResponse(cycles)))
@@ -59,7 +61,7 @@ public class EnigmaController {
 
     @PostMapping("/manualcyclometer")
     public ResponseEntity<CyclometerResponse> cyclometer(@Valid @RequestBody ManualCyclometerRequest req) {
-
+        System.out.println("EnigmaController::manualcyclometer");
         Optional<CyclometerCycles> computedCycles = manualCyclometerConnector.getManualCyclesFromCyclometer(req);
         return computedCycles
                 .map(cycles -> ResponseEntity.ok(new CyclometerResponse(cycles)))
@@ -68,6 +70,7 @@ public class EnigmaController {
 
     @PostMapping("/catalogue")
     public Page<RotorCharacteristic> catalogue(@Valid @RequestBody CatalogueRequest req) {
+        System.out.println("EnigmaController::catalog");
         return service.searchConfig(req.cycles(), req.parameters().page());
     }
 
