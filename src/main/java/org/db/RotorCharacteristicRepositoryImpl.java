@@ -80,8 +80,8 @@ public class RotorCharacteristicRepositoryImpl implements RotorCharacteristicRep
                           AND (:thirdCycleArray IS NULL OR cardinality(:thirdCycleArray) = 0 OR p.three_to_six_permut @> cast(:thirdCycleArray AS integer[]))
                         %s
                     )
-                    SELECT 
-                        pf.*, 
+                    SELECT\s
+                        pf.*,\s
                         c.*
                     FROM prefiltered pf
                     JOIN config c ON pf.permut_id = c.permut_id
@@ -89,7 +89,7 @@ public class RotorCharacteristicRepositoryImpl implements RotorCharacteristicRep
                       AND (:rotorPosition IS NULL OR cardinality(:rotorPosition) = 0 OR c.rotor_position = cast(:rotorPosition AS integer[]))
                       %s
                     LIMIT :limit OFFSET :offset
-                """, frequencyClause, orderByClause);
+               \s""", frequencyClause, orderByClause);
 
         // Count-Query (für Gesamtzahl)
         String countSql = String.format("""
