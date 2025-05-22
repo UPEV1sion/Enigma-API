@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.cache.annotation.Cacheable;
 
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -52,29 +51,24 @@ public class RotorCharacteristicRepositoryImpl implements RotorCharacteristicRep
         rotorOrder = (rotorOrder == null || rotorOrder.length == 0) ? new Integer[0] : rotorOrder;
         rotorPosition = (rotorPosition == null || rotorPosition.length == 0) ? new Integer[0] : rotorPosition;
 
-        List<String> frequencyConditions = new ArrayList<>();
+        StringBuilder frequencyChecks = new StringBuilder();
 
-        firstCycleCounts.forEach((value, count) -> frequencyConditions.add(
+        firstCycleCounts.forEach((value, count) -> frequencyChecks.append(
                 String.format("""
-        (SELECT COUNT(*) FROM unnest(p.one_to_four_permut) val WHERE val = %d) >= %d
-    """, value, count)));
+            AND (SELECT COUNT(*) FROM unnest(p.one_to_four_permut) val WHERE val = %d) >= %d
+        """, value, count)));
 
-        secondCycleCounts.forEach((value, count) -> frequencyConditions.add(
+        secondCycleCounts.forEach((value, count) -> frequencyChecks.append(
                 String.format("""
-        (SELECT COUNT(*) FROM unnest(p.two_to_five_permut) val WHERE val = %d) >= %d
-    """, value, count)));
+            AND (SELECT COUNT(*) FROM unnest(p.two_to_five_permut) val WHERE val = %d) >= %d
+        """, value, count)));
 
-        thirdCycleCounts.forEach((value, count) -> frequencyConditions.add(
+        thirdCycleCounts.forEach((value, count) -> frequencyChecks.append(
                 String.format("""
-        (SELECT COUNT(*) FROM unnest(p.three_to_six_permut) val WHERE val = %d) >= %d
-    """, value, count)));
+            AND (SELECT COUNT(*) FROM unnest(p.three_to_six_permut) val WHERE val = %d) >= %d
+        """, value, count)));
 
-        String frequencyClause = "";
-        if (!frequencyConditions.isEmpty()) {
-            frequencyClause = " AND (" + String.join(" AND ", frequencyConditions) + ")";
-        }
-
-
+        String frequencyClause = frequencyChecks.length() > 0 ? " " + frequencyChecks.toString() : "";
 
 
         String sql = String.format("""
@@ -116,6 +110,7 @@ public class RotorCharacteristicRepositoryImpl implements RotorCharacteristicRep
 
         Session session = entityManager.unwrap(Session.class);
 
+        System.out.println(sql);
         NativeQuery<RotorCharacteristic> query = session.createNativeQuery(sql, RotorCharacteristic.class);
         query.setParameter("firstCycleArray", firstCycleArray);
         query.setParameter("secondCycleArray", secondCycleArray);
