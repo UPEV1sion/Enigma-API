@@ -110,7 +110,6 @@ public class RotorCharacteristicRepositoryImpl implements RotorCharacteristicRep
 
         Session session = entityManager.unwrap(Session.class);
 
-        System.out.println(sql);
         NativeQuery<RotorCharacteristic> query = session.createNativeQuery(sql, RotorCharacteristic.class);
         query.setParameter("firstCycleArray", firstCycleArray);
         query.setParameter("secondCycleArray", secondCycleArray);
