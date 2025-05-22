@@ -1,32 +1,67 @@
 package org.db;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.api.restObjects.catalogue.CatalogueParameters;
+import org.springframework.data.domain.*;
 import org.springframework.transaction.annotation.Transactional;
 import org.api.restObjects.cyclometer.CyclometerCycles;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static org.db.DatabaseConfig.PAGE_SIZE;
 
 @Service
 public class RotorCharacteristicService {
     private final RotorCharacteristicRepository rotorCharacteristicRepository;
+
+    private Map<Integer, Integer> convertToCountMap(int[] values) {
+        return Arrays.stream(values)
+                .boxed()
+                .collect(Collectors.toMap(
+                        v -> v,
+                        _ -> 1,
+                        Integer::sum // falls Duplikate vorkommen
+                ));
+    }
 
     public RotorCharacteristicService(RotorCharacteristicRepository rotorCharacteristicRepository) {
         this.rotorCharacteristicRepository = rotorCharacteristicRepository;
     }
 
     @Transactional(readOnly = true)
-    public Page<RotorCharacteristic> searchConfig(CyclometerCycles computedCycles, final int page) {
-        Pageable pageable = PageRequest.of(page, DatabaseConfig.PAGE_SIZE);
-        List<RotorCharacteristic> results = rotorCharacteristicRepository.findRotorCharacteristic(
-                computedCycles.firstToThird(),
-                computedCycles.secondToFourth(),
-                computedCycles.thirdToSixth(),
-                pageable);
+    public Page<RotorCharacteristic> searchConfig(
+            CyclometerCycles computedCycles, final CatalogueParameters catalogueParameters) {
 
-        return new PageImpl<>(results, pageable, DatabaseConfig.CATALOGUE_SIZE);
+        Sort sort = Sort.unsorted(); // no sort by default
+        if (catalogueParameters.sortBy() != null && !catalogueParameters.sortBy().isBlank()) {
+            Sort.Direction direction = Sort.Direction.fromOptionalString(catalogueParameters.sortDir()).orElse(Sort.Direction.ASC);
+            sort = Sort.by(direction, catalogueParameters.sortBy());
+        }
+        Pageable pageable = PageRequest.of(catalogueParameters.page(), PAGE_SIZE, sort);
+
+        Map<Integer, Integer> first = convertToCountMap(computedCycles.firstToThird());
+        Map<Integer, Integer> second = convertToCountMap(computedCycles.secondToFourth());
+        Map<Integer, Integer> third = convertToCountMap(computedCycles.thirdToSixth());
+
+        RotorCharacteristicCacheKey cacheKey = new RotorCharacteristicCacheKey(
+                first,
+                second,
+                third,
+                catalogueParameters.rotorOrder(),
+                catalogueParameters.rotorPosition(),
+                pageable
+        );
+
+        return rotorCharacteristicRepository.findRotorCharacteristicWithCounts(
+                first,
+                second,
+                third,
+                catalogueParameters.rotorOrder(),
+                catalogueParameters.rotorPosition(),
+                pageable,
+                cacheKey
+        );
     }
 }

@@ -29,7 +29,7 @@ public class EnigmaInterface implements EnigmaConnector {
     }
 
     @Override
-    public Optional<org.api.restObjects.enigma.Enigma> getOutputFromEnigma(
+    public Optional<String> getOutputFromEnigma(
             final org.api.restObjects.enigma.Enigma enigma) {
         final int byteSize = enigma.input().length() + 1;
 
@@ -41,7 +41,7 @@ public class EnigmaInterface implements EnigmaConnector {
 
             if (ret == 0) {
                 final String outputString = outputSeg.reinterpret(byteSize).getString(0);
-                return Optional.of(enigma.withOutput(outputString));
+                return Optional.of(outputString);
             } else {
                 return Optional.empty();
             }

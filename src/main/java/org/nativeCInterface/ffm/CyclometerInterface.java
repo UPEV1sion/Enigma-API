@@ -36,7 +36,7 @@ public class CyclometerInterface implements CyclometerConnector {
 
             final var enigmaSeg = EnigmaFactory.createEnigmaSegment(req.enigma(), arena);
             final var computedCyclesSeg = ComputedCyclesFactory.createCyclometerCyclesSegment(arena);
-            final int dailyKeyCount = Integer.parseInt(req.parameters().daily_key_count());
+            final int dailyKeyCount = req.parameters().daily_key_count();
             final int ret = (int) CYCLOMETER_CREATE_CYCLES.invoke(enigmaSeg, dailyKeyCount, computedCyclesSeg);
 
             if (ret == 0) {

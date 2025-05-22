@@ -5,15 +5,14 @@ import jakarta.validation.ConstraintValidatorContext;
 import org.api.restObjects.validators.enigma.annotations.ValidEnigmaRotorPositions;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.IntStream;
 
-public class EnigmaRotorPositionsValidator implements ConstraintValidator<ValidEnigmaRotorPositions, String[]> {
-    private static final List<String> ALLOWED_ROTOR_POSITIONS = IntStream.range(0, 26).mapToObj(String::valueOf).toList();
+public class EnigmaRotorPositionsValidator implements ConstraintValidator<ValidEnigmaRotorPositions, Integer[]> {
 
     @Override
-    public boolean isValid(String[] strings, ConstraintValidatorContext constraintValidatorContext) {
-        return strings != null && Arrays.stream(strings).allMatch(s -> Objects.nonNull(s) && ALLOWED_ROTOR_POSITIONS.contains(s));
+    public boolean isValid(Integer[] integers, ConstraintValidatorContext context) {
+        // Ensure the array is not null and all values are between 0 and 25 (inclusive)
+        return integers != null &&
+                Arrays.stream(integers)
+                        .allMatch(i -> i != null && i >= 0 && i <= 25);
     }
 }

@@ -38,7 +38,7 @@ public class ManualCyclometerInterface implements ManualCyclometerConnector {
         try (Arena arena = Arena.ofConfined()) {
             final var enigmaSeg = EnigmaFactory.createEnigmaSegment(req.enigma(), arena);
             final var computedCyclesSeg = ComputedCyclesFactory.createCyclometerCyclesSegment(arena);
-            final int dailyKeyCount = Integer.parseInt(req.parameters().daily_key_count());
+            final int dailyKeyCount = req.parameters().daily_key_count();
             final var manual_keys_seg = JavaToCFactory.allocateTerminatedASCIIArrayFromStringArray(req.parameters().manual_keys(), arena);
             final int ret = (int) MANUAL_CYCLOMETER_CREATE_CYCLES.invoke(enigmaSeg, dailyKeyCount, manual_keys_seg, computedCyclesSeg);
             if (ret == 0) {

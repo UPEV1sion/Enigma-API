@@ -5,7 +5,7 @@ import org.api.restObjects.validators.manualcyclometer.annotations.ParametersVal
 
 public record ManualCyclometerParameters(
         @ParametersValidDailyKeyCount
-        String daily_key_count,
+        Integer daily_key_count,
         @ParametersValidManualKey
         String[] manual_keys) {}
 

@@ -4,4 +4,4 @@ import org.api.restObjects.validators.cyclometer.annotations.ParametersValidDail
 
 public record CyclometerParameters(
         @ParametersValidDailyKeyCount
-        String daily_key_count) {}
+        Integer daily_key_count) {}

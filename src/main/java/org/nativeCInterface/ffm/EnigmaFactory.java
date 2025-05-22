@@ -45,12 +45,12 @@ public class EnigmaFactory {
 
     private static Map<String, Object> getEnigmaFieldsSegmentMap(final Enigma enigma, final Arena arena) {
 
-        final var model = Integer.parseInt(enigma.model());
+        final var model = enigma.model();
         final var plugboardSeg = JavaToCFactory.allocatePaddedASCIIFromJavaString(enigma.plugboard(), NativeInterfaceConfig.ALPHABET_SIZE, arena);
         final var messageSeg = JavaToCFactory.allocateTerminatedASCIIFromString(enigma.input(), arena);
-        final var rotorPosSeg = JavaToCFactory.allocateUint8_TArrayFromStringArray(enigma.positions(), model, arena);
-        final var ringPosSeg = JavaToCFactory.allocateUint8_TArrayFromStringArray(enigma.rings(), model, arena);
-        final var rotorTypeSeg = JavaToCFactory.allocateIntArrayFromStringArray(enigma.rotors(), model, arena);
+        final var rotorPosSeg = JavaToCFactory.allocateUint8_TArrayFromIntegerArray(enigma.positions(), arena);
+        final var ringPosSeg = JavaToCFactory.allocateUint8_TArrayFromIntegerArray(enigma.rings(), arena);
+        final var rotorTypeSeg = JavaToCFactory.allocateIntArrayFromIntegerArray(enigma.rotors(), arena);
 
         return Map.of(
                 "plugboard", plugboardSeg,

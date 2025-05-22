@@ -4,35 +4,24 @@ import org.api.restObjects.validators.enigma.annotations.*;
 
 import java.util.Arrays;
 
+
+@ValidEnigmaRotorSize
 public record Enigma(
         @ValidEnigmaModel
-        String model,
+        Integer model,
         @ValidEnigmaReflector
         char reflector,
         @ValidEnigmaRotors
-        String[] rotors,
+        Integer[] rotors,
         @ValidEnigmaRotorPositions
-        String[] positions,
+        Integer[] positions,
         @ValidEnigmaRotorPositions
-        String[] rings,
+        Integer[] rings,
         @ValidEnigmaPlugboard
         String plugboard,
         @ValidEnigmaInput
-        String input,
-        String output) {
+        String input) {
 
-    public Enigma withOutput(String output) {
-        return new Enigma(
-                model(),
-                reflector(),
-                rotors(),
-                positions(),
-                rings(),
-                plugboard(),
-                input(),
-                output
-        );
-    }
 
     @Override
     public String toString() {

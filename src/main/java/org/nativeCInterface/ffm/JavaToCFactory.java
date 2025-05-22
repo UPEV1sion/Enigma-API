@@ -73,6 +73,43 @@ public class JavaToCFactory {
         return arena.allocateFrom(JAVA_BYTE, bytes);
     }
 
+    public static MemorySegment allocateUint8_TArrayFromIntegerArray(final Integer[] arr, final Arena arena) {
+        // Allocate a byte array to hold the data
+        byte[] bytes = new byte[arr.length];
+
+        // Iterate through the input array and directly cast values to byte if they are within the valid uint8_t range
+        for (int i = 0; i < arr.length; i++) {
+            int value = arr[i];
+
+            // Skip values that are outside the valid range for uint8_t (0-255)
+            if (value < 0 || value > 255) {
+                throw new IllegalArgumentException("Value out of range for uint8_t: " + value);
+            }
+
+            // Directly assign the value as byte
+            bytes[i] = (byte) value;
+        }
+
+        // Allocate a MemorySegment from the byte array using the Arena
+        return arena.allocateFrom(JAVA_BYTE, bytes);
+    }
+
+    public static MemorySegment allocateIntArrayFromIntegerArray(final Integer[] arr, final Arena arena) {
+        if (arr == null) {
+            throw new IllegalArgumentException("Input array cannot be null");
+        }
+
+        // Convert Integer[] to int[] since MemorySegment doesn't accept Integer[]
+        int[] primitiveArray = new int[arr.length];
+        for (int i = 0; i < arr.length; i++) {
+            primitiveArray[i] = arr[i];
+        }
+
+        // Allocate memory from the primitive int[] array
+        return arena.allocateFrom(JAVA_INT, primitiveArray);
+    }
+
+
     public static MemorySegment allocateIntArrayFromStringArray(final String[] arr, final int expectedLength, final Arena arena) {
         if (arr.length != expectedLength) {
             throw new IllegalArgumentException("Expected length: " + expectedLength + ", but got: " + arr.length);
