@@ -1,4 +1,4 @@
-package org.db;
+package org.api.restObjects.catalogue;
 
 import java.util.List;
 

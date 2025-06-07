@@ -21,7 +21,7 @@ public class RotorCharacteristicService {
                 .boxed()
                 .collect(Collectors.toMap(
                         v -> v,
-                        _ -> 1,
+                        v -> 1,
                         Integer::sum // falls Duplikate vorkommen
                 ));
     }
@@ -36,8 +36,14 @@ public class RotorCharacteristicService {
 
         Sort sort = Sort.unsorted(); // no sort by default
         if (catalogueParameters.sortBy() != null && !catalogueParameters.sortBy().isBlank()) {
+            String sortBy;
+            if(catalogueParameters.sortBy().equals("rotor_order")) {
+                sortBy = "rotor_id";
+            } else {
+                sortBy = catalogueParameters.sortBy();
+            }
             Sort.Direction direction = Sort.Direction.fromOptionalString(catalogueParameters.sortDir()).orElse(Sort.Direction.ASC);
-            sort = Sort.by(direction, catalogueParameters.sortBy());
+            sort = Sort.by(direction, sortBy);
         }
         Pageable pageable = PageRequest.of(catalogueParameters.page(), PAGE_SIZE, sort);
 
@@ -54,14 +60,33 @@ public class RotorCharacteristicService {
                 pageable
         );
 
-        return rotorCharacteristicRepository.findRotorCharacteristicWithCounts(
+        RotorCharacteristicCountCacheKey countKey = new RotorCharacteristicCountCacheKey(
+                first,
+                second,
+                third,
+                catalogueParameters.rotorOrder(),
+                catalogueParameters.rotorPosition()
+        );
+
+        Long totalCount = rotorCharacteristicRepository.countRotorCharacteristics(
+                first,
+                second,
+                third,
+                catalogueParameters.rotorOrder(),
+                catalogueParameters.rotorPosition(),
+                countKey
+        );
+
+
+        return rotorCharacteristicRepository.findRotorCharacteristic(
                 first,
                 second,
                 third,
                 catalogueParameters.rotorOrder(),
                 catalogueParameters.rotorPosition(),
                 pageable,
-                cacheKey
+                cacheKey,
+                totalCount
         );
     }
 }

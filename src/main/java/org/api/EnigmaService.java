@@ -46,6 +46,7 @@ public class EnigmaService {
         arr[0] = arr[2];
         arr[2] = temp;
     }
+
     public CyclometerRequest normalizeCyclometerRequest(CyclometerRequest req) {
         Enigma enigma = req.enigma();
 

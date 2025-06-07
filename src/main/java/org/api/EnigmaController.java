@@ -5,7 +5,7 @@ import org.api.restObjects.catalogue.CatalogueRequest;
 import org.api.restObjects.enigma.Enigma;
 import org.api.restObjects.enigma.EnigmaResponse;
 import org.api.restObjects.manualcyclometer.ManualCyclometerRequest;
-import org.db.PageDTO;
+import org.api.restObjects.catalogue.PageDTO;
 import org.db.RotorCharacteristic;
 import org.db.RotorCharacteristicService;
 import org.nativeCInterface.CyclometerConnector;
@@ -14,7 +14,6 @@ import org.nativeCInterface.ManualCyclometerConnector;
 import org.nativeCInterface.ffm.CyclometerInterface;
 import org.nativeCInterface.ffm.EnigmaInterface;
 import org.api.restObjects.cyclometer.CyclometerCycles;
-import org.api.restObjects.cyclometer.CyclometerRequest;
 import org.api.restObjects.cyclometer.CyclometerResponse;
 import org.api.restObjects.enigma.EnigmaRequest;
 import org.nativeCInterface.ffm.ManualCyclometerInterface;
@@ -52,8 +51,8 @@ public class EnigmaController {
 
         // Prüfen, ob input nicht leer ist
         if (req.enigma() != null && req.enigma().input() != null && !req.enigma().input().isBlank()) {
-            Enigma normalized = enigmaService.normalizeEnigma(req.enigma());
-            output = enigmaConnector.getOutputFromEnigma(normalized);
+            Enigma enigma_normalized = enigmaService.normalizeEnigma(req.enigma());
+            output = enigmaConnector.getOutputFromEnigma(enigma_normalized);
         }
         return output
                 .map(str -> ResponseEntity.ok(new EnigmaResponse(str)))
@@ -62,16 +61,16 @@ public class EnigmaController {
 
 
 
-    @PostMapping("/cyclometer")
-    public ResponseEntity<CyclometerResponse> cyclometer(@Valid @RequestBody CyclometerRequest req) {
-        CyclometerRequest normalizedRequest = enigmaService.normalizeCyclometerRequest(req);
-        Optional<CyclometerCycles> computedCycles = cyclometerConnector.getCyclesFromCyclometer(normalizedRequest);
-        return computedCycles
-                .map(cycles -> ResponseEntity.ok(new CyclometerResponse(cycles)))
-                .orElseGet(() -> ResponseEntity.badRequest().build());
-    }
+//    @PostMapping("/cyclometer")
+//    public ResponseEntity<CyclometerResponse> cyclometer(@Valid @RequestBody CyclometerRequest req) {
+//        CyclometerRequest normalizedRequest = enigmaService.normalizeCyclometerRequest(req);
+//        Optional<CyclometerCycles> computedCycles = cyclometerConnector.getCyclesFromCyclometer(normalizedRequest);
+//        return computedCycles
+//                .map(cycles -> ResponseEntity.ok(new CyclometerResponse(cycles)))
+//                .orElseGet(() -> ResponseEntity.badRequest().build());
+//    }
 
-    @PostMapping("/manualcyclometer")
+    @PostMapping("/cyclometer")
     public ResponseEntity<CyclometerResponse> cyclometer(@Valid @RequestBody ManualCyclometerRequest req) {
         ManualCyclometerRequest normalizedRequest = enigmaService.normalizeManualCyclometerRequest(req);
         Optional<CyclometerCycles> computedCycles = manualCyclometerConnector.getManualCyclesFromCyclometer(normalizedRequest);
