@@ -3,25 +3,24 @@ package org.db;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class RotorCharacteristicCacheKey {
-    private final Map<Integer,Integer> firstCycleCounts;
-    private final Map<Integer,Integer> secondCycleCounts;
-    private final Map<Integer,Integer> thirdCycleCounts;
-    private final List<Integer> rotorOrder;
-    private final List<Integer> rotorPosition;
+    private final Integer[]firstCycleCounts;
+    private final Integer[] secondCycleCounts;
+    private final Integer[] thirdCycleCounts;
+    private final Integer[]  rotorOrder;
+    private final Integer[]  rotorPosition;
     private final int page;
     private final int size;
     private final String sortProperty;
     private final String sortDirection;
 
     public RotorCharacteristicCacheKey(
-            Map<Integer,Integer> firstCycleCounts,
-            Map<Integer,Integer> secondCycleCounts,
-            Map<Integer,Integer> thirdCycleCounts,
+            Integer[] firstCycleCounts,
+            Integer[] secondCycleCounts,
+            Integer[] thirdCycleCounts,
             Integer[] rotorOrder,
             Integer[] rotorPosition,
             Pageable pageable) {
@@ -29,8 +28,8 @@ public class RotorCharacteristicCacheKey {
         this.firstCycleCounts = firstCycleCounts;
         this.secondCycleCounts = secondCycleCounts;
         this.thirdCycleCounts = thirdCycleCounts;
-        this.rotorOrder = rotorOrder == null ? List.of() : List.of(rotorOrder);
-        this.rotorPosition = rotorPosition == null ? List.of() : List.of(rotorPosition);
+        this.rotorOrder = rotorOrder;
+        this.rotorPosition = rotorPosition;
         this.page = pageable.getPageNumber();
         this.size = pageable.getPageSize();
 
@@ -50,17 +49,26 @@ public class RotorCharacteristicCacheKey {
         if (!(o instanceof RotorCharacteristicCacheKey that)) return false;
         return page == that.page &&
                 size == that.size &&
-                Objects.equals(firstCycleCounts, that.firstCycleCounts) &&
-                Objects.equals(secondCycleCounts, that.secondCycleCounts) &&
-                Objects.equals(thirdCycleCounts, that.thirdCycleCounts) &&
-                Objects.equals(rotorOrder, that.rotorOrder) &&
-                Objects.equals(rotorPosition, that.rotorPosition) &&
+                Arrays.equals(firstCycleCounts, that.firstCycleCounts) &&
+                Arrays.equals(secondCycleCounts, that.secondCycleCounts) &&
+                Arrays.equals(thirdCycleCounts, that.thirdCycleCounts) &&
+                Arrays.equals(rotorOrder, that.rotorOrder) &&
+                Arrays.equals(rotorPosition, that.rotorPosition) &&
                 Objects.equals(sortProperty, that.sortProperty) &&
                 Objects.equals(sortDirection, that.sortDirection);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(firstCycleCounts, secondCycleCounts, thirdCycleCounts, rotorOrder, rotorPosition, page, size, sortProperty, sortDirection);
+        int result = Arrays.hashCode(firstCycleCounts);
+        result = 31 * result + Arrays.hashCode(secondCycleCounts);
+        result = 31 * result + Arrays.hashCode(thirdCycleCounts);
+        result = 31 * result + Arrays.hashCode(rotorOrder);
+        result = 31 * result + Arrays.hashCode(rotorPosition);
+        result = 31 * result + page;
+        result = 31 * result + size;
+        result = 31 * result + (sortProperty != null ? sortProperty.hashCode() : 0);
+        result = 31 * result + (sortDirection != null ? sortDirection.hashCode() : 0);
+        return result;
     }
 }

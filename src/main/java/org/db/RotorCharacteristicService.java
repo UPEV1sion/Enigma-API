@@ -6,25 +6,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.api.restObjects.cyclometer.CyclometerCycles;
 import org.springframework.stereotype.Service;
 
+
 import java.util.Arrays;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static org.db.DatabaseConfig.PAGE_SIZE;
 
 @Service
 public class RotorCharacteristicService {
     private final RotorCharacteristicRepository rotorCharacteristicRepository;
-
-    private Map<Integer, Integer> convertToCountMap(int[] values) {
-        return Arrays.stream(values)
-                .boxed()
-                .collect(Collectors.toMap(
-                        v -> v,
-                        v -> 1,
-                        Integer::sum // falls Duplikate vorkommen
-                ));
-    }
 
     public RotorCharacteristicService(RotorCharacteristicRepository rotorCharacteristicRepository) {
         this.rotorCharacteristicRepository = rotorCharacteristicRepository;
@@ -36,20 +25,14 @@ public class RotorCharacteristicService {
 
         Sort sort = Sort.unsorted(); // no sort by default
         if (catalogueParameters.sortBy() != null && !catalogueParameters.sortBy().isBlank()) {
-            String sortBy;
-            if(catalogueParameters.sortBy().equals("rotor_order")) {
-                sortBy = "rotor_id";
-            } else {
-                sortBy = catalogueParameters.sortBy();
-            }
-            Sort.Direction direction = Sort.Direction.fromOptionalString(catalogueParameters.sortDir()).orElse(Sort.Direction.ASC);
-            sort = Sort.by(direction, sortBy);
+            sort = Sort.by(Sort.Direction.fromOptionalString(catalogueParameters.sortDir()).orElse(Sort.Direction.ASC), catalogueParameters.sortBy());
         }
         Pageable pageable = PageRequest.of(catalogueParameters.page(), PAGE_SIZE, sort);
 
-        Map<Integer, Integer> first = convertToCountMap(computedCycles.firstToThird());
-        Map<Integer, Integer> second = convertToCountMap(computedCycles.secondToFourth());
-        Map<Integer, Integer> third = convertToCountMap(computedCycles.thirdToSixth());
+        Integer[] first = Arrays.stream(computedCycles.firstToThird()).boxed().toArray(Integer[]::new);
+        Integer[] second = Arrays.stream(computedCycles.secondToFourth()).boxed().toArray(Integer[]::new);
+        Integer[] third = Arrays.stream(computedCycles.thirdToSixth()).boxed().toArray(Integer[]::new);
+
 
         RotorCharacteristicCacheKey cacheKey = new RotorCharacteristicCacheKey(
                 first,
