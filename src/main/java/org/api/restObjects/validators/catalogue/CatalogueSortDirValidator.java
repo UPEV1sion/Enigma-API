@@ -8,12 +8,13 @@ public class CatalogueSortDirValidator implements ConstraintValidator<ValidCatal
 
     @Override
     public void initialize(ValidCatalogueSortDir constraintAnnotation) {
-        // Initialization logic if necessary (not needed in this case)
     }
 
     @Override
     public boolean isValid(String sortDir, ConstraintValidatorContext context) {
-        // If sortDir is null or blank, we consider it valid as well (you can handle defaults elsewhere)
-        return sortDir == null || sortDir.isBlank() || sortDir.equalsIgnoreCase("asc") || sortDir.equalsIgnoreCase("desc");
+        if (sortDir == null) {
+            return false;
+        }
+        return sortDir.equalsIgnoreCase("asc") || sortDir.equalsIgnoreCase("desc");
     }
 }

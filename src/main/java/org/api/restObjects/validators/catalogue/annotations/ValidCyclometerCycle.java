@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidCyclometerCycle {
-    String message() default "Invalid cyclometer cycles";
+    String message() default "Must be a non-null array that is either empty or contains integers from 1 to 13, with the total sum not exceeding 13.";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

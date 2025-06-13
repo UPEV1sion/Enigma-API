@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = EnigmaRotorSizeValidator.class)
 public @interface ValidEnigmaRotorSize {
-    String message() default "Rotor positions must match the expected size for the Enigma model";
+    String message() default "For 'model' 3, the arrays 'rotors', 'positions', and 'rings' must each contain exactly 3 elements. For Model 4, these arrays must contain exactly 4 elements.";
 
     Class<?>[] groups() default {};
 

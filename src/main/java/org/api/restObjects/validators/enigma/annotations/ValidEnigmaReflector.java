@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidEnigmaReflector {
-    String message() default "Invalid enigma reflector";
+    String message() default "Only the values 'A', 'B', 'C', 'b', and 'c' are permitted.";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

@@ -33,19 +33,15 @@ public class EnigmaRotorValidator implements ConstraintValidator<ValidEnigmaRoto
         }
 
         // Wenn ein 4. Wert existiert, muss er 9 oder 10 sein
-        if (rotors.length == 4 && !ALLOWED_REFLECTORS.contains(rotors[3])) {
-            return false;
-        }
+        return rotors.length != 4 || ALLOWED_REFLECTORS.contains(rotors[3]);
 
-        // Prüfe auf eindeutige Werte mittels boolean[] (Index 1–10)
-        boolean[] seen = new boolean[11]; // Index 0 wird ignoriert
-        for (Integer value : rotors) {
-            if (seen[value]) {
-                return false; // Duplikat gefunden
-            }
-            seen[value] = true;
-        }
-
-        return true;
+//        // Prüfe auf eindeutige Werte mittels boolean[] (Index 1–10)
+//        boolean[] seen = new boolean[11]; // Index 0 wird ignoriert
+//        for (Integer value : rotors) {
+//            if (seen[value]) {
+//                return false; // Duplikat gefunden
+//            }
+//            seen[value] = true;
+//        }
     }
 }

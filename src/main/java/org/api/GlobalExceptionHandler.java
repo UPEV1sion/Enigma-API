@@ -13,16 +13,20 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(error ->
-                errors.put(error.getField(), error.getDefaultMessage()));
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
-    }
+@ExceptionHandler(MethodArgumentNotValidException.class)
+public ResponseEntity<Map<String, Object>> handleValidationExceptions(MethodArgumentNotValidException ex) {
+    Map<String, String> fieldErrors = new HashMap<>();
+    ex.getBindingResult().getFieldErrors().forEach(error ->
+            fieldErrors.put(error.getField(), error.getDefaultMessage()));
+
+    Map<String, Object> response = new HashMap<>();
+    response.put("errors", fieldErrors);
+
+    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+}
+
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<String> handleInvalidJson(HttpMessageNotReadableException ex) {
-        // Optional: ex.getCause() untersuchen, um genauere Fehlerinfos zu extrahieren
         return ResponseEntity
                 .badRequest()
                 .body("Invalid JSON request: " + ex.getMostSpecificCause().getMessage());

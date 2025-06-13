@@ -10,7 +10,8 @@ public class ParametersManualKeyValidator implements ConstraintValidator<Paramet
 
     @Override
     public boolean isValid(String[] arr, ConstraintValidatorContext constraintValidatorContext) {
-        if (arr == null) return true;
+        if (arr == null) return false;
+        if (arr.length == 0 ) return true;
         if (arr.length > MAX_DAILY_KEY_COUNT) return false;
 
         for (String s : arr) {

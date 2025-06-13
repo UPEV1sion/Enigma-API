@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidCataloguePage {
-    String message() default "Invalid catalogue page";
+    String message() default "Must be a non-null integer between 0 and the last available page.";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidEnigmaPlugboard {
-    String message() default "Invalid enigma plugboard";
+    String message() default "Must contain letters [A-Z] with an even count, maximum 26 letters, no separators allowed.";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

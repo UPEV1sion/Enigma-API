@@ -13,8 +13,12 @@ public class CatalogueRotorPositionValidator implements ConstraintValidator<Vali
 
     @Override
     public boolean isValid(Integer[] rotorPositions, ConstraintValidatorContext context) {
-        if (rotorPositions == null || rotorPositions.length == 0) {
-            return true;  // Null is considered valid (no filtering)
+        if (rotorPositions == null) {
+            return false;
+        }
+
+        if (rotorPositions.length == 0) {
+            return true;
         }
 
         // Check if the array has exactly 3 elements (triplet)

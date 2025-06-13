@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidCatalogueSortBy {
-    String message() default "Invalid sort field provided.";
+    String message() default "Must be either 'rotor_order' or 'rotor_position'.";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

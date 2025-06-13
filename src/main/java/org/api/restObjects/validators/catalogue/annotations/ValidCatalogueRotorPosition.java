@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidCatalogueRotorPosition {
-    String message() default "Invalid rotor position provided.";
+    String message() default "Invalid rotor position provided: must be either an empty array or an array of 3 integers, each between 0 and 25.";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

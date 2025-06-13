@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidEnigmaModel {
-    String message() default "Invalid enigma model";
+    String message() default "Must be exactly 3 for Enigma machines with 3 rotors, and exactly 4 for machines with 4 rotors.";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

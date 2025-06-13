@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidCatalogueSortDir {
-    String message() default "Invalid sorting direction. Allowed values are 'asc' or 'desc'.";
+    String message() default "Must be either 'asc' or 'desc'.";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

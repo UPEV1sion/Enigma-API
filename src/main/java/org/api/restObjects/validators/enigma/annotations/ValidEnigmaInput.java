@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidEnigmaInput {
-    String message() default "Invalid enigma input";
+    String message() default "Must contain only letters [A-Z] or [a-z].";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

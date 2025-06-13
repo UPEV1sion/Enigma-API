@@ -2,7 +2,7 @@ package org.api.restObjects.catalogue;
 
 import java.util.List;
 
-public record PageDTO<T>(
+public record CatalogueResponse<T>(
         List<T> content,
         int pageNumber,
         int pageSize,

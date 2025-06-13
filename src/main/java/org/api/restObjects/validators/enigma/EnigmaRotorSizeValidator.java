@@ -10,7 +10,7 @@ public class EnigmaRotorSizeValidator implements ConstraintValidator<ValidEnigma
 
     @Override
     public boolean isValid(Enigma enigma, ConstraintValidatorContext context) {
-        if (enigma == null || enigma.positions() == null || enigma.model() == null) {
+        if (enigma == null || enigma.positions() == null || enigma.model() == null || enigma.rotors() == null || enigma.rings() == null) {
             return true; // Let @NotNull or other annotations handle this
         }
 
@@ -24,6 +24,6 @@ public class EnigmaRotorSizeValidator implements ConstraintValidator<ValidEnigma
             return false;
         }
 
-        return enigma.positions().length == expectedLength;
+        return (enigma.positions().length == expectedLength && enigma.rings().length == expectedLength && enigma.rotors().length == expectedLength);
     }
 }

@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidEnigmaRotors {
-    String message() default "Invalid enigma rotors";
+    String message() default "The first three 'rotors' must be numbered 1 to 8; if a fourth rotor is used, it must be 9 or 10.";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

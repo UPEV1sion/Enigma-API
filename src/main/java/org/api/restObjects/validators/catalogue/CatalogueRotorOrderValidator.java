@@ -13,7 +13,10 @@ public class CatalogueRotorOrderValidator implements ConstraintValidator<ValidCa
 
     @Override
     public boolean isValid(Integer[] rotorOrders, ConstraintValidatorContext context) {
-        if (rotorOrders == null || rotorOrders.length == 0) {
+        if (rotorOrders == null) {
+            return false;
+        }
+        if (rotorOrders.length == 0) {
             return true;  // Null is considered valid (no filtering)
         }
 

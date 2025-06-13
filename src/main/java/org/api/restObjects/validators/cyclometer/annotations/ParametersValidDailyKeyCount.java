@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ParametersValidDailyKeyCount {
-    String message() default "Invalid parameter";
+    String message() default "Must be an integer between 0 and 1024.";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }
