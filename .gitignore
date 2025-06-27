@@ -7,7 +7,7 @@
 !*/
 !.gitignore
 !db/init.sql.zip
-!LICENCE
+!LICENSE
 
 application.properties
 !application-template.properties
