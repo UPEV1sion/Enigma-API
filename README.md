@@ -133,7 +133,3 @@ It builds upon:
   *“Kryptoanalyse der Enigma-Maschine durch eine Software-Nachbildung der Turing-Welchman-Bombe”* (2025, RWU),  
   supervised by Prof. Dipl.-Math. Ekkehard Löhmann  
   and **co-authored and extended by Tobias Steidle**
-
----
-
-Let me know if you'd like the badge or license content localized into German or if you’re preparing this for a university submission and need any formatting tweaks!
