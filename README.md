@@ -133,3 +133,8 @@ It builds upon:
   *“Kryptoanalyse der Enigma-Maschine durch eine Software-Nachbildung der Turing-Welchman-Bombe”* (2025, RWU),  
   supervised by Prof. Dipl.-Math. Ekkehard Löhmann  
   and **co-authored and extended by Tobias Steidle**
+
+## Frontend
+
+This API powers the EnigmaSite frontend, which can be viewed live here:  
+🔗 https://enigma-zyklometer.rwu.de
