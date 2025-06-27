@@ -6,3 +6,11 @@
 !README.md
 !*/
 !.gitignore
+!db/init.sql.zip
+!LICENCE
+
+application.properties
+!application-template.properties
+
+# Ignore native code source folder
+src/main/enigma_c/

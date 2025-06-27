@@ -33,9 +33,10 @@ public class Main {
             @Override
             public void addCorsMappings(@NonNull CorsRegistry registry) {
                 registry.addMapping("/api/**")  // Match all paths under /api/
-                        .allowedOrigins("http://localhost:8080", "https://enigma-zyklometer.rwu.de")//localhost:80")
-                        .allowedMethods("POST")  // You can restrict allowed methods if needed
-                        .allowedHeaders("*");  // Allow all headers
+                        .allowedOrigins("http://localhost:8080/", "https://enigma-zyklometer.rwu.de")//localhost:80")
+                        .allowedMethods("POST", "OPTIONS")
+                        .allowCredentials(false)
+                        .allowedHeaders("Content-Type");
             }
         };
         }
