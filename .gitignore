@@ -12,5 +12,8 @@
 application.properties
 !application-template.properties
 
-# Ignore native code source folder
-src/main/enigma_c/
+
+# Track the folder itself, but ignore its contents
+src/main/enigma_c/*
+!src/main/enigma_c/.gitkeep
+
