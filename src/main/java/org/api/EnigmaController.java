@@ -52,8 +52,10 @@ public class EnigmaController {
         Optional<String> output = Optional.empty();
         // Prüfen, ob input nicht leer ist
         if (req.enigma().input() != null && !req.enigma().input().isBlank()) {
-            Enigma enigma_normalized = enigmaService.normalizeEnigma(req.enigma());
-            output = enigmaConnector.getOutputFromEnigma(enigma_normalized);
+//            Enigma enigma_normalized = enigmaService.normalizeEnigma(req.enigma());
+//            output = enigmaConnector.getOutputFromEnigma(enigma_normalized);
+
+            output = enigmaConnector.getOutputFromEnigma(req.enigma());
         }
         return output
                 .map(str -> ResponseEntity.ok(new EnigmaResponse(str)))
@@ -69,8 +71,10 @@ public class EnigmaController {
         if (req.parameters() == null) {
             return ResponseEntity.badRequest().body("Empty 'parameters' object.");
         }
-        ManualCyclometerRequest normalizedRequest = enigmaService.normalizeManualCyclometerRequest(req);
-        Optional<CyclometerCycles> computedCycles = manualCyclometerConnector.getManualCyclesFromCyclometer(normalizedRequest);
+//        ManualCyclometerRequest normalizedRequest = enigmaService.normalizeManualCyclometerRequest(req);
+//        Optional<CyclometerCycles> computedCycles = manualCyclometerConnector.getManualCyclesFromCyclometer(normalizedRequest);
+
+        Optional<CyclometerCycles> computedCycles = manualCyclometerConnector.getManualCyclesFromCyclometer(req);
         return computedCycles
                 .map(cycles -> ResponseEntity.ok(new CyclometerResponse(cycles)))
                 .orElseGet(() -> ResponseEntity.badRequest().build());
