@@ -17,3 +17,9 @@ application.properties
 src/main/enigma_c/*
 !src/main/enigma_c/.gitkeep
 
+# Erlaube build-Ordner selbst (für Struktur)
+!build/
+# Erlaube nur .jar-Dateien im root von build/
+!build/*.jar
+# Alles andere im build-Ordner ignorieren
+build/*/
