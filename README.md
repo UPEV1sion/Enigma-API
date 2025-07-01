@@ -13,11 +13,16 @@ This project exposes a native Enigma simulation backend via a Java-based Spring 
 It is part of a modular ecosystem:
 
 - **[Enigma-API](https://github.com/UPEV1sion/Enigma-API)**  
-  → RESTful interface to native simulation logic using FFM
+  → Provides a REST interface to the simulator, accessible via Foreign Function & Memory (FFM) in modern Java applications.
+
 - **[EnigmaServer](https://github.com/UPEV1sion/Enigma/tree/server)**  
-  → Server-focused backend extension, includes native simulator compilation
+  → Server-focused fork for backend integration and deployment.
+
 - **[EnigmaSite](https://github.com/Bibble-code/EnigmaSite)**  
-  → Web-based frontend for interacting with the simulators
+  → A web-based frontend for interacting with the Enigma and Cyclometer simulators.
+
+- **[Enigma-Zyklometer-Notes](https://github.com/Bibble-code/Enigma-Zyklometer-Notes)**
+  → Technical documentation and bachelor thesis.
 
 ---
 

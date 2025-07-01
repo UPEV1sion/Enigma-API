@@ -3,7 +3,6 @@ package org.api;
 import jakarta.validation.Valid;
 import org.api.restObjects.catalogue.CatalogueRequest;
 import org.api.restObjects.catalogue.CatalogueResponse;
-import org.api.restObjects.enigma.Enigma;
 import org.api.restObjects.enigma.EnigmaResponse;
 import org.api.restObjects.manualcyclometer.ManualCyclometerRequest;
 import org.db.RotorCharacteristic;
@@ -27,13 +26,11 @@ import java.util.Optional;
 @RequestMapping("/api")
 public class EnigmaController {
 
-    private final EnigmaService enigmaService;
     private final RotorCharacteristicService service;
     private final EnigmaConnector enigmaConnector;
     private final ManualCyclometerConnector manualCyclometerConnector;
 
-    public EnigmaController(RotorCharacteristicService rotorCharacteristicService, EnigmaService enigmaService) {
-        this.enigmaService = enigmaService;
+    public EnigmaController(RotorCharacteristicService rotorCharacteristicService) {
         this.service = rotorCharacteristicService;
         this.enigmaConnector = new EnigmaInterface();
         this.manualCyclometerConnector = new ManualCyclometerInterface();
