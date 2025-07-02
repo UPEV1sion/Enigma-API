@@ -6,13 +6,13 @@ This folder contains a compressed PostgreSQL database dump (`init.sql.zip`) to h
 
 ## Requirements
 
-- **PostgreSQL 16 or newer**
+- **PostgreSQL 17 or newer**
 
 > Not installed yet?  
 > You can [download PostgreSQL](https://www.postgresql.org/download/) for your platform, or use a package manager like:
-> - `apt install postgresql-16` (Debian/Ubuntu)
-> - `brew install postgresql@16` (macOS with Homebrew)
-> - Or run it via Docker: `docker pull postgres:16`
+> - `apt install postgresql-17` (Debian/Ubuntu)
+> - `brew install postgresql@17` (macOS with Homebrew)
+> - Or run it via Docker: `docker pull postgres:17`
 
 ---
 
@@ -36,7 +36,7 @@ unzip init.sql.zip
 Use names that match your `application.properties` configuration. Here’s a safe, placeholder-friendly example:
 
 ```bash
-psql -U postgres
+psql -U postgres -h localhost -p 5432
 ```
 
 Inside the PostgreSQL shell:
@@ -45,6 +45,7 @@ Inside the PostgreSQL shell:
 CREATE DATABASE your_database_name;
 CREATE USER your_username WITH PASSWORD 'your_secure_password';
 GRANT ALL PRIVILEGES ON DATABASE your_database_name TO your_username;
+GRANT USAGE ON SCHEMA public TO your_username;
 ```
 
 Exit with `\q`.
@@ -52,7 +53,7 @@ Exit with `\q`.
 ### 3. Import the SQL dump
 
 ```bash
-psql -U your_username -d your_database_name < init.sql
+psql -U postgres -h localhost -p 5432 -d your_database_name < init.sql
 ```
 
 ---

@@ -54,7 +54,7 @@ The Java runtime must enable native access:
 ```bash
 java --enable-native-access=ALL-UNNAMED -jar target/Enigma_API-0.0.1-SNAPSHOT.jar
 ```
-
+> ⚠️ Note: `target/Enigma_API-0.0.1-SNAPSHOT.jar` only exists after a successful build
 ---
 
 ### 2. Configuration
@@ -88,20 +88,11 @@ mvn spring-boot:run
 
 ## Database Setup
 
-PostgreSQL 16+ is required.
+PostgreSQL 17+ is required.
 
-A sample, non-sensitive development dump is provided in:
+Please refer to the detailed setup instructions in `db/README.md` for initializing the database and importing the sample dump.
 
-```
-db/init.sql.zip
-```
-
-To initialize:
-
-```bash
-unzip db/init.sql.zip
-psql -U postgres -d catalogue < db/init.sql
-```
+Make sure to create a PostgreSQL database and user as described there, and update your `application.properties` file with the corresponding database name, username, and password to match your local setup.
 
 > The uncompressed `init.sql` is ignored via `.gitignore` to prevent accidental commits.
 
