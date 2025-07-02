@@ -29,7 +29,7 @@ It is part of a modular ecosystem:
 ## Prerequisites
 
 - **Java 22 or newer** (Java 23 recommended)
-- **PostgreSQL 16+**
+- **PostgreSQL 17+**
 - **libenigma.so** (compiled separately from the native simulation layer)
 - **Maven 3.9+**
 
